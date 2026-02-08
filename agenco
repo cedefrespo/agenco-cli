@@ -232,6 +232,7 @@ def cmd_search(args):
     """Handle search command."""
     if not args:
         print("Usage: agenco search <query>")
+        print("Note: Searches in names, descriptions, and file contents")
         return
     
     query = " ".join(args)
@@ -240,9 +241,11 @@ def cmd_search(args):
     total = sum(len(v) for v in results.values())
     if total == 0:
         print(f"No results found for '{query}'")
+        print("Tip: Search looks in names, descriptions, and file contents")
         return
     
-    print(f"\n🔍 Search results for '{query}':\n")
+    print(f"\nSearch results for '{query}':")
+    print("(searching in names, descriptions, and content)\n")
     
     if results["agents"]:
         print(f"  📦 Agents ({len(results['agents'])}):")

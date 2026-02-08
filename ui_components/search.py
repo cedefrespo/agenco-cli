@@ -27,6 +27,9 @@ def search_menu():
     console.print(panel)
     console.print()
     
+    console.print("[dim]Searches in names, descriptions, and file contents[/]")
+    console.print()
+    
     query = Prompt.ask("Enter search query")
     
     if not query.strip():
@@ -44,7 +47,8 @@ def search_menu():
         wait_for_key()
         return
     
-    console.print(f"[bold]Found {total} result{'s' if total != 1 else ''} for '[{COLORS['search']}]{query}[/]':[/]\n")
+    console.print(f"[bold]Found {total} result{'s' if total != 1 else ''} for '[{COLORS['search']}]{query}[/]':[/]")
+    console.print("[dim](including matches in file contents)[/]\n")
     
     # Agents results
     if results["agents"]:

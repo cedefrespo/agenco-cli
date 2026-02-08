@@ -285,7 +285,13 @@ def copy_to_clipboard(text: str) -> bool:
 # ============================================
 
 def search_all(query: str) -> dict:
-    """Search across agents, contexts, and prompts."""
+    """Search across agents, contexts, and prompts.
+    
+    Searches in:
+    - Names and descriptions
+    - Content of files (for agents and contexts)
+    - Prompt text (for prompts)
+    """
     query = query.lower()
     results = {
         "agents": [],
@@ -293,14 +299,37 @@ def search_all(query: str) -> dict:
         "prompts": []
     }
     
+    # Search agents (name, description, AND file contents)
     for agent in get_agents():
+        # Check name and description first
         if query in agent.get("name", "").lower() or query in agent.get("description", "").lower():
             results["agents"].append(agent)
+            continue
+        
+        # Also search in file contents
+        try:
+            content = get_agent_content(agent.get("name", ""))
+            if content and query in content.lower():
+                results["agents"].append(agent)
+        except Exception:
+            pass  # Skip if file not readable
     
+    # Search contexts (name, description, AND file contents)
     for ctx in get_contexts():
+        # Check name and description first
         if query in ctx.get("name", "").lower() or query in ctx.get("description", "").lower():
             results["contexts"].append(ctx)
+            continue
+        
+        # Also search in file contents
+        try:
+            content = get_context_content(ctx.get("name", ""))
+            if content and query in content.lower():
+                results["contexts"].append(ctx)
+        except Exception:
+            pass  # Skip if file not readable
     
+    # Search prompts (name, description, AND prompt text)
     for prompt in get_prompts():
         if (query in prompt.get("name", "").lower() or 
             query in prompt.get("description", "").lower() or
