@@ -1,17 +1,136 @@
 {
   "agents": [
     {
-      "name": "marco",
-      "description": "Backend developer agent for Go/Python APIs",
+      "name": "alicia",
+      "description": "Agente Alicia",
       "files": [
-        "~/context/agents/marco.md"
+        "~/context/agent/alicia/system_prompt.md",
+        "~/context/agent/alicia/README.md"
+      ]
+    },
+    {
+      "name": "andy",
+      "description": "Agente Andy",
+      "files": [
+        "~/context/agent/andy/system_prompt.md",
+        "~/context/agent/andy/README.md"
+      ]
+    },
+    {
+      "name": "cimo",
+      "description": "Agente CIMO",
+      "files": [
+        "~/context/agent/cimo/system_prompt.md",
+        "~/context/agent/cimo/README.md"
+      ]
+    },
+    {
+      "name": "coda",
+      "description": "Agente Coda",
+      "files": [
+        "~/context/agent/coda/system_prompt.md",
+        "~/context/agent/coda/README.md"
+      ]
+    },
+    {
+      "name": "eloisa",
+      "description": "Creative director, music production & art direction",
+      "files": [
+        "~/context/agent/eloisa/system_prompt.md",
+        "~/context/agent/eloisa/README.md",
+        "~/context/agent/eloisa/capabilities/music_production.md",
+        "~/context/agent/eloisa/capabilities/art_direction.md",
+        "~/context/agent/eloisa/capabilities/creative_coaching.md"
+      ]
+    },
+    {
+      "name": "feffort",
+      "description": "Agente Feffort",
+      "files": [
+        "~/context/agent/feffort/system_prompt.md",
+        "~/context/agent/feffort/README.md"
+      ]
+    },
+    {
+      "name": "fiona",
+      "description": "Agente Fiona",
+      "files": [
+        "~/context/agent/fiona/system_prompt.md",
+        "~/context/agent/fiona/README.md"
+      ]
+    },
+    {
+      "name": "flop",
+      "description": "Agente Flop",
+      "files": [
+        "~/context/agent/flop/system_prompt.md"
+      ]
+    },
+    {
+      "name": "juana",
+      "description": "Agente Juana",
+      "files": [
+        "~/context/agent/juana/system_prompt.md",
+        "~/context/agent/juana/README.md"
       ]
     },
     {
       "name": "luna",
-      "description": "Frontend developer agent for React/Next.js",
+      "description": "Frontend developer for React/Next.js/TypeScript",
       "files": [
-        "~/context/agents/luna.md"
+        "~/context/agent/luna/system_prompt.md"
+      ]
+    },
+    {
+      "name": "marco",
+      "description": "Backend developer for Go/Python APIs",
+      "files": [
+        "~/context/agent/marco/system_prompt.md"
+      ]
+    },
+    {
+      "name": "mark",
+      "description": "Agente Mark",
+      "files": [
+        "~/context/agent/mark/system_prompt.md",
+        "~/context/agent/mark/README.md"
+      ]
+    },
+    {
+      "name": "master",
+      "description": "Agente Master",
+      "files": [
+        "~/context/agent/master/system_prompt.md"
+      ]
+    },
+    {
+      "name": "max",
+      "description": "Agente Max",
+      "files": [
+        "~/context/agent/max/system_prompt.md"
+      ]
+    },
+    {
+      "name": "nicole",
+      "description": "Agente Nicole",
+      "files": [
+        "~/context/agent/nicole/system_prompt.md",
+        "~/context/agent/nicole/README.md"
+      ]
+    },
+    {
+      "name": "psimon",
+      "description": "Agente Psimon",
+      "files": [
+        "~/context/agent/psimon/system_prompt.md",
+        "~/context/agent/psimon/README.md"
+      ]
+    },
+    {
+      "name": "rob",
+      "description": "Agente Rob",
+      "files": [
+        "~/context/agent/rob/system_prompt.md"
       ]
     }
   ]
