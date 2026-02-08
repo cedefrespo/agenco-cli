@@ -1,0 +1,19 @@
+{
+  "contexts": [
+    {
+      "name": "agenco-backend",
+      "description": "Agenco ledger-api Go backend",
+      "files": [
+        "~/agt/ledger-api/README.md",
+        "~/agt/ledger-api/ARCHITECTURE.md"
+      ]
+    },
+    {
+      "name": "agenco-frontend",
+      "description": "Agenco Next.js web frontend",
+      "files": [
+        "~/agt/web/README.md"
+      ]
+    }
+  ]
+}

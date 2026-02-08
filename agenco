@@ -1,0 +1,316 @@
+#!/usr/bin/env python3
+"""
+Agenco CLI - Command Line Interface
+Manage agents, contexts, and prompts.
+
+Usage:
+    agenco                     # Interactive mode
+    agenco agents              # List agents
+    agenco agents show <name>  # Show agent details
+    agenco agents copy <name>  # Copy agent content to clipboard
+    agenco contexts            # List contexts
+    agenco contexts show <name># Show context details
+    agenco contexts copy <name># Copy context content to clipboard
+    agenco prompts             # List prompts
+    agenco prompts show <name> # Show prompt details
+    agenco prompts copy <name> # Copy prompt to clipboard
+    agenco search <query>      # Search across all
+    agenco stats               # Show statistics
+"""
+
+import sys
+import os
+
+# Add script directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from core import (
+    get_agents, get_agent, get_agent_content, add_agent, remove_agent,
+    get_contexts, get_context, get_context_content, add_context, remove_context,
+    get_prompts, get_prompt, get_prompt_content, add_prompt, update_prompt, remove_prompt,
+    copy_to_clipboard, search_all, get_stats
+)
+
+
+def print_help():
+    """Print help message."""
+    print(__doc__)
+
+
+def cmd_agents(args):
+    """Handle agents commands."""
+    if not args:
+        # List all agents
+        agents = get_agents()
+        if not agents:
+            print("No agents found.")
+            return
+        print(f"\n📦 Agents ({len(agents)}):\n")
+        for agent in agents:
+            print(f"  • {agent['name']}")
+            if agent.get('description'):
+                print(f"    {agent['description']}")
+        print()
+        return
+    
+    subcmd = args[0]
+    
+    if subcmd == "show" and len(args) > 1:
+        name = args[1]
+        agent = get_agent(name)
+        if not agent:
+            print(f"Agent '{name}' not found.")
+            return
+        print(f"\n📦 Agent: {agent['name']}")
+        print(f"   Description: {agent.get('description', 'N/A')}")
+        print(f"   Files:")
+        for f in agent.get('files', []):
+            print(f"     - {f}")
+        print()
+    
+    elif subcmd == "copy" and len(args) > 1:
+        name = args[1]
+        content = get_agent_content(name)
+        if not content:
+            print(f"Agent '{name}' not found.")
+            return
+        if copy_to_clipboard(content):
+            print(f"✅ Agent '{name}' content copied to clipboard!")
+        else:
+            print("❌ Failed to copy to clipboard.")
+            print(content)
+    
+    elif subcmd == "add" and len(args) > 2:
+        name = args[1]
+        files = args[2:]
+        try:
+            add_agent(name, "", files)
+            print(f"✅ Agent '{name}' added!")
+        except ValueError as e:
+            print(f"❌ {e}")
+    
+    elif subcmd == "remove" and len(args) > 1:
+        name = args[1]
+        if remove_agent(name):
+            print(f"✅ Agent '{name}' removed!")
+        else:
+            print(f"❌ Agent '{name}' not found.")
+    
+    else:
+        print("Usage: agenco agents [show|copy|add|remove] <name> [files...]")
+
+
+def cmd_contexts(args):
+    """Handle contexts commands."""
+    if not args:
+        # List all contexts
+        contexts = get_contexts()
+        if not contexts:
+            print("No contexts found.")
+            return
+        print(f"\n📚 Contexts ({len(contexts)}):\n")
+        for ctx in contexts:
+            print(f"  • {ctx['name']}")
+            if ctx.get('description'):
+                print(f"    {ctx['description']}")
+        print()
+        return
+    
+    subcmd = args[0]
+    
+    if subcmd == "show" and len(args) > 1:
+        name = args[1]
+        ctx = get_context(name)
+        if not ctx:
+            print(f"Context '{name}' not found.")
+            return
+        print(f"\n📚 Context: {ctx['name']}")
+        print(f"   Description: {ctx.get('description', 'N/A')}")
+        print(f"   Files:")
+        for f in ctx.get('files', []):
+            print(f"     - {f}")
+        print()
+    
+    elif subcmd == "copy" and len(args) > 1:
+        name = args[1]
+        content = get_context_content(name)
+        if not content:
+            print(f"Context '{name}' not found.")
+            return
+        if copy_to_clipboard(content):
+            print(f"✅ Context '{name}' content copied to clipboard!")
+        else:
+            print("❌ Failed to copy to clipboard.")
+            print(content)
+    
+    elif subcmd == "add" and len(args) > 2:
+        name = args[1]
+        files = args[2:]
+        try:
+            add_context(name, "", files)
+            print(f"✅ Context '{name}' added!")
+        except ValueError as e:
+            print(f"❌ {e}")
+    
+    elif subcmd == "remove" and len(args) > 1:
+        name = args[1]
+        if remove_context(name):
+            print(f"✅ Context '{name}' removed!")
+        else:
+            print(f"❌ Context '{name}' not found.")
+    
+    else:
+        print("Usage: agenco contexts [show|copy|add|remove] <name> [files...]")
+
+
+def cmd_prompts(args):
+    """Handle prompts commands."""
+    if not args:
+        # List all prompts
+        prompts = get_prompts()
+        if not prompts:
+            print("No prompts found.")
+            return
+        print(f"\n💬 Prompts ({len(prompts)}):\n")
+        for prompt in prompts:
+            print(f"  • {prompt['name']}")
+            if prompt.get('description'):
+                print(f"    {prompt['description']}")
+        print()
+        return
+    
+    subcmd = args[0]
+    
+    if subcmd == "show" and len(args) > 1:
+        name = args[1]
+        prompt = get_prompt(name)
+        if not prompt:
+            print(f"Prompt '{name}' not found.")
+            return
+        print(f"\n💬 Prompt: {prompt['name']}")
+        print(f"   Description: {prompt.get('description', 'N/A')}")
+        print(f"\n   Content:")
+        print("   " + "-" * 40)
+        for line in prompt.get('prompt', '').split('\n'):
+            print(f"   {line}")
+        print("   " + "-" * 40)
+        print()
+    
+    elif subcmd == "copy" and len(args) > 1:
+        name = args[1]
+        content = get_prompt_content(name)
+        if content is None:
+            print(f"Prompt '{name}' not found.")
+            return
+        if copy_to_clipboard(content):
+            print(f"✅ Prompt '{name}' copied to clipboard!")
+        else:
+            print("❌ Failed to copy to clipboard.")
+            print(content)
+    
+    elif subcmd == "add" and len(args) > 2:
+        name = args[1]
+        prompt_text = " ".join(args[2:])
+        try:
+            add_prompt(name, "", prompt_text)
+            print(f"✅ Prompt '{name}' added!")
+        except ValueError as e:
+            print(f"❌ {e}")
+    
+    elif subcmd == "remove" and len(args) > 1:
+        name = args[1]
+        if remove_prompt(name):
+            print(f"✅ Prompt '{name}' removed!")
+        else:
+            print(f"❌ Prompt '{name}' not found.")
+    
+    else:
+        print("Usage: agenco prompts [show|copy|add|remove] <name> [content...]")
+
+
+def cmd_search(args):
+    """Handle search command."""
+    if not args:
+        print("Usage: agenco search <query>")
+        return
+    
+    query = " ".join(args)
+    results = search_all(query)
+    
+    total = sum(len(v) for v in results.values())
+    if total == 0:
+        print(f"No results found for '{query}'")
+        return
+    
+    print(f"\n🔍 Search results for '{query}':\n")
+    
+    if results["agents"]:
+        print(f"  📦 Agents ({len(results['agents'])}):")
+        for agent in results["agents"]:
+            print(f"    • {agent['name']} - {agent.get('description', '')}")
+    
+    if results["contexts"]:
+        print(f"  📚 Contexts ({len(results['contexts'])}):")
+        for ctx in results["contexts"]:
+            print(f"    • {ctx['name']} - {ctx.get('description', '')}")
+    
+    if results["prompts"]:
+        print(f"  💬 Prompts ({len(results['prompts'])}):")
+        for prompt in results["prompts"]:
+            print(f"    • {prompt['name']} - {prompt.get('description', '')}")
+    
+    print()
+
+
+def cmd_stats(args):
+    """Handle stats command."""
+    stats = get_stats()
+    print("\n📊 Agenco Statistics:\n")
+    print(f"  📦 Agents:   {stats['agents']}")
+    print(f"  📚 Contexts: {stats['contexts']}")
+    print(f"  💬 Prompts:  {stats['prompts']}")
+    print(f"  ─────────────────")
+    print(f"  📁 Total:    {sum(stats.values())}")
+    print()
+
+
+def interactive_mode():
+    """Run interactive mode - delegates to UI module."""
+    try:
+        from ui import run_interactive
+        run_interactive()
+    except ImportError:
+        print("Interactive UI not available. Use command-line arguments.")
+        print_help()
+
+
+def main():
+    """Main entry point."""
+    args = sys.argv[1:]
+    
+    if not args:
+        interactive_mode()
+        return
+    
+    cmd = args[0]
+    cmd_args = args[1:]
+    
+    if cmd in ["-h", "--help", "help"]:
+        print_help()
+    elif cmd == "agents":
+        cmd_agents(cmd_args)
+    elif cmd == "contexts":
+        cmd_contexts(cmd_args)
+    elif cmd == "prompts":
+        cmd_prompts(cmd_args)
+    elif cmd == "search":
+        cmd_search(cmd_args)
+    elif cmd == "stats":
+        cmd_stats(cmd_args)
+    else:
+        print(f"Unknown command: {cmd}")
+        print_help()
+
+
+if __name__ == "__main__":
+    main()

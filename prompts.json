@@ -1,0 +1,54 @@
+{
+  "prompts": [
+    {
+      "name": "fix-bug",
+      "description": "Template for bug fixing requests",
+      "prompt": "I found a bug in the application. Here's what's happening:\n\n**Expected behavior:**\n[describe what should happen]\n\n**Actual behavior:**\n[describe what's actually happening]\n\n**Steps to reproduce:**\n1. [step 1]\n2. [step 2]\n\n**Error messages:**\n```\n[paste error here]\n```\n\nPlease investigate and fix this issue."
+    },
+    {
+      "name": "new-feature",
+      "description": "Template for new feature requests",
+      "prompt": "I need to implement a new feature:\n\n**Feature name:** [name]\n\n**Description:**\n[detailed description]\n\n**Requirements:**\n- [ ] Requirement 1\n- [ ] Requirement 2\n\n**Acceptance criteria:**\n- [ ] Criteria 1\n- [ ] Criteria 2\n\nPlease implement this feature following best practices."
+    },
+    {
+      "name": "code-review",
+      "description": "Request a code review",
+      "prompt": "Please review the following code and provide feedback on:\n\n1. Code quality and readability\n2. Performance considerations\n3. Security concerns\n4. Best practices\n5. Potential bugs\n\nBe thorough but constructive."
+    },
+    {
+      "name": "refactor",
+      "description": "Request code refactoring",
+      "prompt": "Please refactor this code to improve:\n\n- Readability\n- Maintainability\n- Performance (if applicable)\n- Test coverage\n\nExplain your changes and the reasoning behind them."
+    },
+    {
+      "name": "explain",
+      "description": "Ask for code explanation",
+      "prompt": "Please explain how this code works:\n\n1. Overall purpose and flow\n2. Key functions/components\n3. Important patterns used\n4. Any potential issues or improvements"
+    },
+    {
+      "name": "music-con-li-ds",
+      "description": "Psychedelic garage punk revival with trumpets (Con Li / DS style)",
+      "prompt": "Psychedelic garage punk revival with trumpets. Rhodes-style electric keyboard (warm mid-range), simple repetitive chords. Minimal raw arrangement, dry mix, loop-friendly groove. Keep the same vocal style and melody, restrained delivery, no dramatic dynamics."
+    },
+    {
+      "name": "music-bjm",
+      "description": "Psychedelic rock lo-fi, hypnotic and droning (BJM style)",
+      "prompt": "Psychedelic rock lo-fi, hypnotic and droning, mid-tempo groove, jangly 12-string guitars with heavy reverb and tremolo, hazy analog feel, minimal but driving drums, deep warm bass, vintage tape saturation, dreamy male vocal slightly buried in the mix, mellow and detached mood, repetitive mantra-like melodies, 60s psych atmosphere, cinematic and trippy, raw and organic production."
+    },
+    {
+      "name": "music-oh-sees",
+      "description": "High-energy garage-psych punk (The Oh Sees style)",
+      "prompt": "High-energy garage-psych punk, fast tempo, aggressive fuzzy guitars, punchy distorted bass, tight explosive drums, raw live feel, gritty male vocal with attitude, short catchy riffs, chaotic but controlled energy, DIY lo-fi production, driving rhythms for head-bobbing, rebellious and wild vibe, dynamic shifts and sudden breaks, sweaty underground show atmosphere."
+    },
+    {
+      "name": "music-lp-roxette",
+      "description": "Indie pop-rock emotivo con voz rasposa (LP / Roxette style)",
+      "prompt": "Indie pop-rock emotivo con voz rasposa y expresiva estilo soul-folk, tempo medio (70-85 BPM), mood melancólico pero poderoso, melodías nostálgicas y pegadizas, guitarras acústicas con strumming abierto, capas sutiles de electric guitar con reverb, bajo cálido y presente, drums simples y profundos, atmósfera íntima pero épica en el estribillo, dinámica de menos a más, letras sobre amor perdido y anhelo, feeling vulnerable pero resiliente, producción limpia con aire 90s pop-rock y toque moderno, vocal al frente con mucha emoción y pequeños quiebres en la voz, hook silbable o tarareable, cinematic and heartfelt."
+    },
+    {
+      "name": "music-king-gizzard",
+      "description": "Psychedelic garage rock with experimental edge (King Gizzard style)",
+      "prompt": "Psychedelic garage rock with experimental edge, driving motorik rhythm, energetic live drums, fuzzy microtonal-feeling guitars with phaser and delay, groovy melodic basslines, raw analog warmth, dynamic shifts between mellow psych jams and explosive sections, hypnotic repetitive riffs, adventurous song structure, trippy and surreal mood, slightly gritty vocal with reverb and attitude, retro 70s psych vibe mixed with modern garage intensity, jam-band feel, cinematic and mind-bending atmosphere."
+    }
+  ]
+}
