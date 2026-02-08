@@ -15,6 +15,7 @@ from .agents import agents_menu
 from .contexts import contexts_menu
 from .prompts import prompts_menu
 from .search import search_menu
+from .publish import publish_menu
 
 __all__ = [
     'console',
@@ -31,4 +32,5 @@ __all__ = [
     'contexts_menu',
     'prompts_menu',
     'search_menu',
+    'publish_menu',
 ]

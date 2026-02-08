@@ -19,7 +19,8 @@ from ui_components import (
     agents_menu,
     contexts_menu,
     prompts_menu,
-    search_menu
+    search_menu,
+    publish_menu
 )
 
 
@@ -36,11 +37,12 @@ def main_menu():
         console.print(f"  [{COLORS['info']}][2][/] Contexts")
         console.print(f"  [{COLORS['info']}][3][/] Prompts")
         console.print(f"  [{COLORS['info']}][4][/] Search")
+        console.print(f"  [{COLORS['info']}][5][/] Publish to Marketplace")
         console.print()
-        console.print(f"  [{COLORS['info']}][5][/] Exit")
+        console.print(f"  [{COLORS['info']}][0][/] Exit")
         
         console.print()
-        choice = Prompt.ask("Select option", default="5")
+        choice = Prompt.ask("Select option", default="0")
         
         if choice == "1":
             agents_menu()
@@ -50,7 +52,9 @@ def main_menu():
             prompts_menu()
         elif choice == "4":
             search_menu()
-        elif choice == "5" or choice.lower() in ["q", "quit", "exit"]:
+        elif choice == "5":
+            publish_menu()
+        elif choice == "0" or choice.lower() in ["q", "quit", "exit"]:
             clear_screen()
             console.print(Panel(
                 Align.center(Text("Goodbye!", style="bold blue")),
