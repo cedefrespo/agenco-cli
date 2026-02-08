@@ -350,3 +350,135 @@ def get_stats() -> dict:
         "contexts": len(get_contexts()),
         "prompts": len(get_prompts())
     }
+
+
+# ============================================
+# PUBLISH TO AGENCO MARKETPLACE
+# ============================================
+
+def publish_agent(name: str, api_url: str = "https://api.agenco.dev", token: str = None) -> dict:
+    """Publish an agent to Agenco marketplace."""
+    import requests
+    
+    agent = get_agent(name)
+    if not agent:
+        raise ValueError(f"Agent '{name}' not found")
+    
+    # Get agent content from files
+    content = get_agent_content(name)
+    if not content:
+        raise ValueError(f"Agent '{name}' has no content to publish")
+    
+    # Prepare payload
+    payload = {
+        "name": agent.get("name"),
+        "description": agent.get("description", ""),
+        "content": content,
+        "tags": agent.get("tags", []),
+        "category": agent.get("category", "other"),
+        "status": "active",
+        "is_public": True,
+        "is_free": True,
+    }
+    
+    # Make API request
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    
+    response = requests.post(
+        f"{api_url}/api/v1/agents/publish",
+        json=payload,
+        headers=headers
+    )
+    
+    if response.status_code in [200, 201]:
+        return response.json()
+    else:
+        raise Exception(f"Failed to publish agent: {response.status_code} - {response.text}")
+
+
+def publish_context(name: str, api_url: str = "https://api.agenco.dev", token: str = None) -> dict:
+    """Publish a context to Agenco marketplace."""
+    import requests
+    
+    context = get_context(name)
+    if not context:
+        raise ValueError(f"Context '{name}' not found")
+    
+    # Get context content from files
+    content = get_context_content(name)
+    if not content:
+        raise ValueError(f"Context '{name}' has no content to publish")
+    
+    # Prepare payload
+    payload = {
+        "name": context.get("name"),
+        "description": context.get("description", ""),
+        "content": content,
+        "tags": context.get("tags", []),
+        "category": context.get("category", "other"),
+        "content_type": context.get("content_type", "documents"),
+        "status": "active",
+        "is_public": True,
+        "is_free": True,
+    }
+    
+    # Make API request
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    
+    response = requests.post(
+        f"{api_url}/api/v1/contexts/publish",
+        json=payload,
+        headers=headers
+    )
+    
+    if response.status_code in [200, 201]:
+        return response.json()
+    else:
+        raise Exception(f"Failed to publish context: {response.status_code} - {response.text}")
+
+
+def publish_prompt(name: str, api_url: str = "https://api.agenco.dev", token: str = None) -> dict:
+    """Publish a prompt to Agenco marketplace."""
+    import requests
+    
+    prompt = get_prompt(name)
+    if not prompt:
+        raise ValueError(f"Prompt '{name}' not found")
+    
+    prompt_text = prompt.get("prompt", "")
+    if not prompt_text:
+        raise ValueError(f"Prompt '{name}' has no content to publish")
+    
+    # Prepare payload
+    payload = {
+        "name": prompt.get("name"),
+        "description": prompt.get("description", ""),
+        "content": prompt_text,
+        "system_role": prompt.get("system_role", ""),
+        "tags": prompt.get("tags", []),
+        "category": prompt.get("category", "coding"),
+        "status": "active",
+        "is_public": True,
+        "is_free": True,
+    }
+    
+    # Make API request
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    
+    response = requests.post(
+        f"{api_url}/api/v1/prompts/publish",
+        json=payload,
+        headers=headers
+    )
+    
+    if response.status_code in [200, 201]:
+        return response.json()
+    else:
+        raise Exception(f"Failed to publish prompt: {response.status_code} - {response.text}")
+

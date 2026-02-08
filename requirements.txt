@@ -1,5 +1,6 @@
 # Agenco CLI Dependencies
-# Core has no dependencies (uses stdlib only)
+# Core dependencies
+requests>=2.31.0
 
-# For the UI (Luna will implement):
+# For the UI:
 rich>=13.0.0

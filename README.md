@@ -54,6 +54,26 @@ agenco search <query>   # Search across all
 agenco stats            # Show statistics
 ```
 
+#### Publish to Marketplace
+```bash
+# Publish agents, contexts, or prompts to Agenco marketplace
+agenco publish agent <name>          # Publish an agent
+agenco publish context <name>        # Publish a context
+agenco publish prompt <name>         # Publish a prompt
+
+# With authentication token
+agenco publish agent marco --token abc123
+
+# Custom API URL (for testing)
+agenco publish context ux-patterns --api-url http://localhost:8080
+
+# Using environment variable for token
+export AGENCO_TOKEN='your-token-here'
+agenco publish prompt code-review
+```
+
+> **Note:** Publishing requires authentication. Set `AGENCO_TOKEN` environment variable or use `--token` flag.
+
 ## Data Files
 
 - `agents.json` - Agent definitions with file references

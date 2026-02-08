@@ -16,6 +16,7 @@ Usage:
     agenco prompts copy <name> # Copy prompt to clipboard
     agenco search <query>      # Search across all
     agenco stats               # Show statistics
+    agenco publish <type> <name> # Publish to Agenco marketplace
 """
 
 import sys
@@ -277,6 +278,79 @@ def cmd_stats(args):
     print()
 
 
+def cmd_publish(args):
+    """Handle publish command - publish to Agenco marketplace."""
+    if not args or len(args) < 2:
+        print("\nUsage: agenco publish <type> <name> [--token TOKEN] [--api-url URL]")
+        print("\nExamples:")
+        print("  agenco publish agent marco")
+        print("  agenco publish context ux-patterns")
+        print("  agenco publish prompt code-review")
+        print("  agenco publish agent marco --token abc123")
+        print("  agenco publish context ux-patterns --api-url http://localhost:8080")
+        print("\nOptions:")
+        print("  --token TOKEN    Authentication token (if not set, will look for AGENCO_TOKEN env var)")
+        print("  --api-url URL    API URL (default: https://api.agenco.dev)")
+        print()
+        return
+    
+    item_type = args[0].lower()
+    name = args[1]
+    
+    # Parse optional arguments
+    token = os.getenv("AGENCO_TOKEN")
+    api_url = "https://api.agenco.dev"
+    
+    i = 2
+    while i < len(args):
+        if args[i] == "--token" and i + 1 < len(args):
+            token = args[i + 1]
+            i += 2
+        elif args[i] == "--api-url" and i + 1 < len(args):
+            api_url = args[i + 1]
+            i += 2
+        else:
+            i += 1
+    
+    if not token:
+        print("\n⚠️  No authentication token provided.")
+        print("Set AGENCO_TOKEN environment variable or use --token flag.")
+        print("Example: export AGENCO_TOKEN='your-token-here'")
+        print()
+        return
+    
+    try:
+        print(f"\n🚀 Publishing {item_type} '{name}' to Agenco marketplace...")
+        
+        if item_type == "agent":
+            from core import publish_agent
+            result = publish_agent(name, api_url=api_url, token=token)
+        elif item_type == "context":
+            from core import publish_context
+            result = publish_context(name, api_url=api_url, token=token)
+        elif item_type == "prompt":
+            from core import publish_prompt
+            result = publish_prompt(name, api_url=api_url, token=token)
+        else:
+            print(f"\n❌ Unknown type: {item_type}")
+            print("   Valid types: agent, context, prompt")
+            return
+        
+        print(f"\n✅ Successfully published '{name}'!")
+        if result.get("id"):
+            print(f"   ID: {result['id']}")
+        if result.get("url"):
+            print(f"   URL: {result['url']}")
+        print()
+        
+    except ValueError as e:
+        print(f"\n❌ Error: {str(e)}")
+        print()
+    except Exception as e:
+        print(f"\n❌ Failed to publish: {str(e)}")
+        print()
+
+
 def interactive_mode():
     """Run interactive mode - delegates to UI module."""
     try:
@@ -310,6 +384,8 @@ def main():
         cmd_search(cmd_args)
     elif cmd == "stats":
         cmd_stats(cmd_args)
+    elif cmd == "publish":
+        cmd_publish(cmd_args)
     else:
         print(f"Unknown command: {cmd}")
         print_help()
