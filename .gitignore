@@ -1,4 +1,30 @@
-UI_ARCHITECTURE.md
-ui_old.py
-*_old.py
+# Backups and old files
+*_old.*
 *_backup.*
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (goes in ~/context/agenco-cli/)
+*_ARCHITECTURE.md
+*_REFACTOR.md
+NOTES.md
