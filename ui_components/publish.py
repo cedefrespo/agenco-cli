@@ -27,7 +27,7 @@ def publish_menu():
         clear_screen()
         print_header()
         console.print()
-        console.print(f"[{COLORS['title']}]Publish to Marketplace[/]", style="bold")
+        console.print(f"[{COLORS['info']}]Publish to Marketplace[/]", style="bold")
         console.print()
         
         # Menu options
@@ -55,7 +55,7 @@ def publish_agent_interactive():
     clear_screen()
     print_header()
     console.print()
-    console.print(f"[{COLORS['title']}]Publish Agent[/]", style="bold")
+    console.print(f"[{COLORS['info']}]Publish Agent[/]", style="bold")
     console.print()
     
     # Show available agents
@@ -65,7 +65,7 @@ def publish_agent_interactive():
         wait_for_key()
         return
     
-    console.print(f"[{COLORS['secondary']}]Available Agents:[/]")
+    console.print(f"[{COLORS['muted']}]Available Agents:[/]")
     for i, agent in enumerate(agents, 1):
         console.print(f"  [{COLORS['info']}]{i}.[/] {agent['name']}")
     console.print()
@@ -113,12 +113,12 @@ def publish_agent_interactive():
         console.print()
         print_success(f"Successfully published '{agent_name}'!")
         if result.get("id"):
-            console.print(f"  [{COLORS['secondary']}]ID:[/] {result['id']}")
+            console.print(f"  [{COLORS['muted']}]ID:[/] {result['id']}")
         if result.get("url"):
-            console.print(f"  [{COLORS['secondary']}]URL:[/] {result['url']}")
+            console.print(f"  [{COLORS['muted']}]URL:[/] {result['url']}")
         if result.get("action"):
             action = result['action']
-            console.print(f"  [{COLORS['secondary']}]Action:[/] {action}")
+            console.print(f"  [{COLORS['muted']}]Action:[/] {action}")
     except Exception as e:
         console.print()
         print_error(f"Failed to publish: {str(e)}")
@@ -132,7 +132,7 @@ def publish_context_interactive():
     clear_screen()
     print_header()
     console.print()
-    console.print(f"[{COLORS['title']}]Publish Context[/]", style="bold")
+    console.print(f"[{COLORS['info']}]Publish Context[/]", style="bold")
     console.print()
     
     # Show available contexts
@@ -142,7 +142,7 @@ def publish_context_interactive():
         wait_for_key()
         return
     
-    console.print(f"[{COLORS['secondary']}]Available Contexts:[/]")
+    console.print(f"[{COLORS['muted']}]Available Contexts:[/]")
     for i, ctx in enumerate(contexts, 1):
         console.print(f"  [{COLORS['info']}]{i}.[/] {ctx['name']}")
     console.print()
@@ -190,12 +190,12 @@ def publish_context_interactive():
         console.print()
         print_success(f"Successfully published '{context_name}'!")
         if result.get("id"):
-            console.print(f"  [{COLORS['secondary']}]ID:[/] {result['id']}")
+            console.print(f"  [{COLORS['muted']}]ID:[/] {result['id']}")
         if result.get("url"):
-            console.print(f"  [{COLORS['secondary']}]URL:[/] {result['url']}")
+            console.print(f"  [{COLORS['muted']}]URL:[/] {result['url']}")
         if result.get("action"):
             action = result['action']
-            console.print(f"  [{COLORS['secondary']}]Action:[/] {action}")
+            console.print(f"  [{COLORS['muted']}]Action:[/] {action}")
     except Exception as e:
         console.print()
         print_error(f"Failed to publish: {str(e)}")
@@ -209,7 +209,7 @@ def publish_prompt_interactive():
     clear_screen()
     print_header()
     console.print()
-    console.print(f"[{COLORS['title']}]Publish Prompt[/]", style="bold")
+    console.print(f"[{COLORS['info']}]Publish Prompt[/]", style="bold")
     console.print()
     
     # Show available prompts
@@ -219,7 +219,7 @@ def publish_prompt_interactive():
         wait_for_key()
         return
     
-    console.print(f"[{COLORS['secondary']}]Available Prompts:[/]")
+    console.print(f"[{COLORS['muted']}]Available Prompts:[/]")
     for i, prompt in enumerate(prompts, 1):
         console.print(f"  [{COLORS['info']}]{i}.[/] {prompt['name']}")
     console.print()
@@ -267,12 +267,12 @@ def publish_prompt_interactive():
         console.print()
         print_success(f"Successfully published '{prompt_name}'!")
         if result.get("id"):
-            console.print(f"  [{COLORS['secondary']}]ID:[/] {result['id']}")
+            console.print(f"  [{COLORS['muted']}]ID:[/] {result['id']}")
         if result.get("url"):
-            console.print(f"  [{COLORS['secondary']}]URL:[/] {result['url']}")
+            console.print(f"  [{COLORS['muted']}]URL:[/] {result['url']}")
         if result.get("action"):
             action = result['action']
-            console.print(f"  [{COLORS['secondary']}]Action:[/] {action}")
+            console.print(f"  [{COLORS['muted']}]Action:[/] {action}")
     except Exception as e:
         console.print()
         print_error(f"Failed to publish: {str(e)}")
