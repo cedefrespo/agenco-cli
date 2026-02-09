@@ -548,7 +548,7 @@ def login(email: str, password: str, api_url: str = "https://agt.fly.dev") -> di
     # Check if 2FA is required
     if data.get("requires_2fa"):
         session_id = data.get("session_id")
-        print(f"\n📧 2FA code sent to {email}")
+        print(f"\n2FA code sent to {email}")
         code = input("Enter 2FA code: ").strip()
         
         # Step 2: Verify 2FA

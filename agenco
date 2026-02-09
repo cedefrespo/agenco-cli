@@ -57,7 +57,7 @@ def cmd_agents(args):
         if not agents:
             print("No agents found.")
             return
-        print(f"\n📦 Agents ({len(agents)}):\n")
+        print(f"\n Agents ({len(agents)}):\n")
         for agent in agents:
             print(f"  • {agent['name']}")
             if agent.get('description'):
@@ -73,7 +73,7 @@ def cmd_agents(args):
         if not agent:
             print(f"Agent '{name}' not found.")
             return
-        print(f"\n📦 Agent: {agent['name']}")
+        print(f"\n Agent: {agent['name']}")
         print(f"   Description: {agent.get('description', 'N/A')}")
         print(f"   Files:")
         for f in agent.get('files', []):
@@ -87,9 +87,9 @@ def cmd_agents(args):
             print(f"Agent '{name}' not found.")
             return
         if copy_to_clipboard(content):
-            print(f"✅ Agent '{name}' content copied to clipboard!")
+            print(f"[OK] Agent '{name}' content copied to clipboard!")
         else:
-            print("❌ Failed to copy to clipboard.")
+            print("[ERROR] Failed to copy to clipboard.")
             print(content)
     
     elif subcmd == "add" and len(args) > 2:
@@ -97,16 +97,16 @@ def cmd_agents(args):
         files = args[2:]
         try:
             add_agent(name, "", files)
-            print(f"✅ Agent '{name}' added!")
+            print(f"[OK] Agent '{name}' added!")
         except ValueError as e:
-            print(f"❌ {e}")
+            print(f"[ERROR] {e}")
     
     elif subcmd == "remove" and len(args) > 1:
         name = args[1]
         if remove_agent(name):
-            print(f"✅ Agent '{name}' removed!")
+            print(f"[OK] Agent '{name}' removed!")
         else:
-            print(f"❌ Agent '{name}' not found.")
+            print(f"[ERROR] Agent '{name}' not found.")
     
     else:
         print("Usage: agenco agents [show|copy|add|remove] <name> [files...]")
@@ -150,9 +150,9 @@ def cmd_contexts(args):
             print(f"Context '{name}' not found.")
             return
         if copy_to_clipboard(content):
-            print(f"✅ Context '{name}' content copied to clipboard!")
+            print(f"[OK] Context '{name}' content copied to clipboard!")
         else:
-            print("❌ Failed to copy to clipboard.")
+            print("[ERROR] Failed to copy to clipboard.")
             print(content)
     
     elif subcmd == "add" and len(args) > 2:
@@ -160,16 +160,16 @@ def cmd_contexts(args):
         files = args[2:]
         try:
             add_context(name, "", files)
-            print(f"✅ Context '{name}' added!")
+            print(f"[OK] Context '{name}' added!")
         except ValueError as e:
-            print(f"❌ {e}")
+            print(f"[ERROR] {e}")
     
     elif subcmd == "remove" and len(args) > 1:
         name = args[1]
         if remove_context(name):
-            print(f"✅ Context '{name}' removed!")
+            print(f"[OK] Context '{name}' removed!")
         else:
-            print(f"❌ Context '{name}' not found.")
+            print(f"[ERROR] Context '{name}' not found.")
     
     else:
         print("Usage: agenco contexts [show|copy|add|remove] <name> [files...]")
@@ -215,9 +215,9 @@ def cmd_prompts(args):
             print(f"Prompt '{name}' not found.")
             return
         if copy_to_clipboard(content):
-            print(f"✅ Prompt '{name}' copied to clipboard!")
+            print(f"[OK] Prompt '{name}' copied to clipboard!")
         else:
-            print("❌ Failed to copy to clipboard.")
+            print("[ERROR] Failed to copy to clipboard.")
             print(content)
     
     elif subcmd == "add" and len(args) > 2:
@@ -225,16 +225,16 @@ def cmd_prompts(args):
         prompt_text = " ".join(args[2:])
         try:
             add_prompt(name, "", prompt_text)
-            print(f"✅ Prompt '{name}' added!")
+            print(f"[OK] Prompt '{name}' added!")
         except ValueError as e:
-            print(f"❌ {e}")
+            print(f"[ERROR] {e}")
     
     elif subcmd == "remove" and len(args) > 1:
         name = args[1]
         if remove_prompt(name):
-            print(f"✅ Prompt '{name}' removed!")
+            print(f"[OK] Prompt '{name}' removed!")
         else:
-            print(f"❌ Prompt '{name}' not found.")
+            print(f"[ERROR] Prompt '{name}' not found.")
     
     else:
         print("Usage: agenco prompts [show|copy|add|remove] <name> [content...]")
@@ -260,7 +260,7 @@ def cmd_search(args):
     print("(searching in names, descriptions, and content)\n")
     
     if results["agents"]:
-        print(f"  📦 Agents ({len(results['agents'])}):")
+        print(f"   Agents ({len(results['agents'])}):")
         for agent in results["agents"]:
             print(f"    • {agent['name']} - {agent.get('description', '')}")
     
@@ -281,7 +281,7 @@ def cmd_stats(args):
     """Handle stats command."""
     stats = get_stats()
     print("\n📊 Agenco Statistics:\n")
-    print(f"  📦 Agents:   {stats['agents']}")
+    print(f"   Agents:   {stats['agents']}")
     print(f"  📚 Contexts: {stats['contexts']}")
     print(f"  💬 Prompts:  {stats['prompts']}")
     print(f"  ─────────────────")
@@ -324,7 +324,7 @@ def cmd_publish(args):
             i += 1
     
     try:
-        print(f"\n🚀 Publishing {item_type} '{name}' to Agenco marketplace...")
+        print(f"\n[Publishing] Publishing {item_type} '{name}' to Agenco marketplace...")
         
         if item_type == "agent":
             from core import publish_agent
@@ -336,11 +336,11 @@ def cmd_publish(args):
             from core import publish_prompt
             result = publish_prompt(name, api_url=api_url, token=token)
         else:
-            print(f"\n❌ Unknown type: {item_type}")
+            print(f"\n[ERROR] Unknown type: {item_type}")
             print("   Valid types: agent, context, prompt")
             return
         
-        print(f"\n✅ Successfully published '{name}'!")
+        print(f"\n[OK] Successfully published '{name}'!")
         if result.get("id"):
             print(f"   ID: {result['id']}")
         if result.get("url"):
@@ -348,10 +348,10 @@ def cmd_publish(args):
         print()
         
     except ValueError as e:
-        print(f"\n❌ Error: {str(e)}")
+        print(f"\n[ERROR] Error: {str(e)}")
         print()
     except Exception as e:
-        print(f"\n❌ Failed to publish: {str(e)}")
+        print(f"\n[ERROR] Failed to publish: {str(e)}")
         print()
 
 
@@ -386,7 +386,7 @@ def cmd_login(args):
             i += 1
     
     print()
-    print("🔐 Login to Agenco")
+    print("[Login] Login to Agenco")
     print()
     
     # Get credentials
@@ -400,7 +400,7 @@ def cmd_login(args):
         user = result.get("user", {})
         
         print()
-        print(f"✅ Logged in successfully as {user.get('name', email)}")
+        print(f"[OK] Logged in successfully as {user.get('name', email)}")
         print(f"   Email: {user.get('email')}")
         print()
         print("You can now use 'agenco publish' without --token")
@@ -408,7 +408,7 @@ def cmd_login(args):
         
     except Exception as e:
         print()
-        print(f"❌ Login failed: {str(e)}")
+        print(f"[ERROR] Login failed: {str(e)}")
         print()
 
 
@@ -419,13 +419,13 @@ def cmd_logout(args):
     user = get_current_user()
     if not user:
         print()
-        print("ℹ️  Not logged in")
+        print("[INFO]  Not logged in")
         print()
         return
     
     logout()
     print()
-    print(f"✅ Logged out from {user.get('email')}")
+    print(f"[OK] Logged out from {user.get('email')}")
     print()
 
 
@@ -436,7 +436,7 @@ def cmd_whoami(args):
     user = get_current_user()
     if not user:
         print()
-        print("ℹ️  Not logged in")
+        print("[INFO]  Not logged in")
         print()
         print("Run 'agenco login' to authenticate")
         print()
@@ -445,7 +445,7 @@ def cmd_whoami(args):
     config = get_config()
     
     print()
-    print("👤 Current User")
+    print("[User] Current User")
     print()
     print(f"   Name: {user.get('name', 'N/A')}")
     print(f"   Email: {user.get('email')}")
