@@ -14,6 +14,10 @@ AGENTS_FILE = BASE_DIR / "agents.json"
 CONTEXTS_FILE = BASE_DIR / "contexts.json"
 PROMPTS_FILE = BASE_DIR / "prompts.json"
 
+# User config directory
+CONFIG_DIR = Path.home() / ".agenco"
+CONFIG_FILE = CONFIG_DIR / "config.json"
+
 
 def expand_path(path: str) -> Path:
     """Expand ~ and environment variables in path."""
@@ -356,9 +360,15 @@ def get_stats() -> dict:
 # PUBLISH TO AGENCO MARKETPLACE
 # ============================================
 
-def publish_agent(name: str, api_url: str = "https://api.agenco.dev", token: str = None) -> dict:
+def publish_agent(name: str, api_url: str = "https://agt.fly.dev", token: str = None) -> dict:
     """Publish an agent to Agenco marketplace."""
     import requests
+    
+    # Use saved token if not provided
+    if not token:
+        token = get_saved_token()
+        if not token:
+            raise ValueError("Not logged in. Run 'agenco login' first or provide --token")
     
     agent = get_agent(name)
     if not agent:
@@ -398,9 +408,15 @@ def publish_agent(name: str, api_url: str = "https://api.agenco.dev", token: str
         raise Exception(f"Failed to publish agent: {response.status_code} - {response.text}")
 
 
-def publish_context(name: str, api_url: str = "https://api.agenco.dev", token: str = None) -> dict:
+def publish_context(name: str, api_url: str = "https://agt.fly.dev", token: str = None) -> dict:
     """Publish a context to Agenco marketplace."""
     import requests
+    
+    # Use saved token if not provided
+    if not token:
+        token = get_saved_token()
+        if not token:
+            raise ValueError("Not logged in. Run 'agenco login' first or provide --token")
     
     context = get_context(name)
     if not context:
@@ -441,9 +457,15 @@ def publish_context(name: str, api_url: str = "https://api.agenco.dev", token: s
         raise Exception(f"Failed to publish context: {response.status_code} - {response.text}")
 
 
-def publish_prompt(name: str, api_url: str = "https://api.agenco.dev", token: str = None) -> dict:
+def publish_prompt(name: str, api_url: str = "https://agt.fly.dev", token: str = None) -> dict:
     """Publish a prompt to Agenco marketplace."""
     import requests
+    
+    # Use saved token if not provided
+    if not token:
+        token = get_saved_token()
+        if not token:
+            raise ValueError("Not logged in. Run 'agenco login' first or provide --token")
     
     prompt = get_prompt(name)
     if not prompt:
@@ -481,4 +503,76 @@ def publish_prompt(name: str, api_url: str = "https://api.agenco.dev", token: st
         return response.json()
     else:
         raise Exception(f"Failed to publish prompt: {response.status_code} - {response.text}")
+
+
+# ============================================
+# AUTHENTICATION
+# ============================================
+
+def get_config() -> dict:
+    """Load user config from ~/.agenco/config.json"""
+    if not CONFIG_FILE.exists():
+        return {}
+    with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+def save_config(config: dict) -> None:
+    """Save user config to ~/.agenco/config.json"""
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+        json.dump(config, f, indent=2, ensure_ascii=False)
+
+
+def get_saved_token() -> Optional[str]:
+    """Get saved auth token from config."""
+    config = get_config()
+    return config.get("token")
+
+
+def login(email: str, password: str, api_url: str = "https://agt.fly.dev") -> dict:
+    """Login to Agenco and save token."""
+    import requests
+    
+    response = requests.post(
+        f"{api_url}/api/v1/auth/login",
+        json={"email": email, "password": password}
+    )
+    
+    if response.status_code == 200:
+        data = response.json()
+        token = data.get("token")
+        user = data.get("user", {})
+        
+        # Save token and user info
+        config = {
+            "token": token,
+            "user": {
+                "email": user.get("email"),
+                "name": user.get("name"),
+                "id": user.get("id")
+            },
+            "api_url": api_url
+        }
+        save_config(config)
+        return data
+    else:
+        raise Exception(f"Login failed: {response.status_code} - {response.text}")
+
+
+def logout() -> None:
+    """Remove saved authentication."""
+    if CONFIG_FILE.exists():
+        CONFIG_FILE.unlink()
+
+
+def get_current_user() -> Optional[dict]:
+    """Get current logged-in user info."""
+    config = get_config()
+    return config.get("user")
+
+
+def is_logged_in() -> bool:
+    """Check if user is logged in."""
+    return get_saved_token() is not None
 

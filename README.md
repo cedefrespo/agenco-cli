@@ -14,6 +14,28 @@ pip install -r ~/agenco-cli/requirements.txt
 
 ## Usage
 
+### Authentication
+
+Login to Agenco to publish resources without passing `--token` every time:
+
+```bash
+# Login (saves token to ~/.agenco/config.json)
+agenco login
+
+# Check current user
+agenco whoami
+
+# Logout
+agenco logout
+```
+
+After login, you can publish directly:
+```bash
+agenco publish prompt fix-bug
+agenco publish agent marco
+agenco publish context ux-patterns
+```
+
 ### Interactive Mode
 ```bash
 agenco
@@ -55,12 +77,19 @@ agenco stats            # Show statistics
 ```
 
 #### Publish to Marketplace
+
+After logging in with `agenco login`, publish is simple:
+
 ```bash
 # Publish agents, contexts, or prompts to Agenco marketplace
 agenco publish agent <name>          # Publish an agent
 agenco publish context <name>        # Publish a context
 agenco publish prompt <name>         # Publish a prompt
+```
 
+Without login, you can still use `--token`:
+
+```bash
 # With authentication token
 agenco publish agent marco --token abc123
 
@@ -72,7 +101,7 @@ export AGENCO_TOKEN='your-token-here'
 agenco publish prompt code-review
 ```
 
-> **Note:** Publishing requires authentication. Set `AGENCO_TOKEN` environment variable or use `--token` flag.
+> **Note:** Publishing requires authentication. Use `agenco login` (recommended) or provide `--token` flag.
 
 ## Data Files
 

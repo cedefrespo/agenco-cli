@@ -5,6 +5,9 @@ Manage agents, contexts, and prompts.
 
 Usage:
     agenco                     # Interactive mode
+    agenco login               # Login to Agenco
+    agenco logout              # Logout from Agenco
+    agenco whoami              # Show current user
     agenco agents              # List agents
     agenco agents show <name>  # Show agent details
     agenco agents copy <name>  # Copy agent content to clipboard
@@ -17,6 +20,14 @@ Usage:
     agenco search <query>      # Search across all
     agenco stats               # Show statistics
     agenco publish <type> <name> # Publish to Agenco marketplace
+
+Authentication:
+    Login to avoid passing --token every time:
+        agenco login
+        agenco publish prompt fix-bug
+    
+    Or use token directly:
+        agenco publish prompt fix-bug --token YOUR_TOKEN
 """
 
 import sys
@@ -361,6 +372,95 @@ def interactive_mode():
         print_help()
 
 
+def cmd_login(args):
+    """Handle 'agenco login' command."""
+    import getpass
+    from core import login
+    
+    # Parse optional args
+    api_url = "https://agt.fly.dev"
+    email = None
+    
+    i = 0
+    while i < len(args):
+        if args[i] == "--api-url" and i + 1 < len(args):
+            api_url = args[i + 1]
+            i += 2
+        elif args[i] == "--email" and i + 1 < len(args):
+            email = args[i + 1]
+            i += 2
+        else:
+            i += 1
+    
+    print()
+    print("🔐 Login to Agenco")
+    print()
+    
+    # Get credentials
+    if not email:
+        email = input("Email: ").strip()
+    
+    password = getpass.getpass("Password: ")
+    
+    try:
+        result = login(email, password, api_url)
+        user = result.get("user", {})
+        
+        print()
+        print(f"✅ Logged in successfully as {user.get('name', email)}")
+        print(f"   Email: {user.get('email')}")
+        print()
+        print("You can now use 'agenco publish' without --token")
+        print()
+        
+    except Exception as e:
+        print()
+        print(f"❌ Login failed: {str(e)}")
+        print()
+
+
+def cmd_logout(args):
+    """Handle 'agenco logout' command."""
+    from core import logout, get_current_user
+    
+    user = get_current_user()
+    if not user:
+        print()
+        print("ℹ️  Not logged in")
+        print()
+        return
+    
+    logout()
+    print()
+    print(f"✅ Logged out from {user.get('email')}")
+    print()
+
+
+def cmd_whoami(args):
+    """Handle 'agenco whoami' command."""
+    from core import get_current_user, get_config
+    
+    user = get_current_user()
+    if not user:
+        print()
+        print("ℹ️  Not logged in")
+        print()
+        print("Run 'agenco login' to authenticate")
+        print()
+        return
+    
+    config = get_config()
+    
+    print()
+    print("👤 Current User")
+    print()
+    print(f"   Name: {user.get('name', 'N/A')}")
+    print(f"   Email: {user.get('email')}")
+    print(f"   ID: {user.get('id', 'N/A')}")
+    print(f"   API: {config.get('api_url', 'N/A')}")
+    print()
+
+
 def main():
     """Main entry point."""
     args = sys.argv[1:]
@@ -374,6 +474,12 @@ def main():
     
     if cmd in ["-h", "--help", "help"]:
         print_help()
+    elif cmd == "login":
+        cmd_login(cmd_args)
+    elif cmd == "logout":
+        cmd_logout(cmd_args)
+    elif cmd == "whoami":
+        cmd_whoami(cmd_args)
     elif cmd == "agents":
         cmd_agents(cmd_args)
     elif cmd == "contexts":
