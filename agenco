@@ -310,7 +310,7 @@ def cmd_publish(args):
     
     # Parse optional arguments
     token = os.getenv("AGENCO_TOKEN")
-    api_url = "https://api.agenco.dev"
+    api_url = "https://agt.fly.dev"
     
     i = 2
     while i < len(args):
@@ -322,13 +322,6 @@ def cmd_publish(args):
             i += 2
         else:
             i += 1
-    
-    if not token:
-        print("\n⚠️  No authentication token provided.")
-        print("Set AGENCO_TOKEN environment variable or use --token flag.")
-        print("Example: export AGENCO_TOKEN='your-token-here'")
-        print()
-        return
     
     try:
         print(f"\n🚀 Publishing {item_type} '{name}' to Agenco marketplace...")

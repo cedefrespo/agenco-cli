@@ -534,30 +534,53 @@ def login(email: str, password: str, api_url: str = "https://agt.fly.dev") -> di
     """Login to Agenco and save token."""
     import requests
     
+    # Step 1: Initial login
     response = requests.post(
         f"{api_url}/api/v1/auth/login",
         json={"email": email, "password": password}
     )
     
-    if response.status_code == 200:
-        data = response.json()
-        token = data.get("token")
-        user = data.get("user", {})
-        
-        # Save token and user info
-        config = {
-            "token": token,
-            "user": {
-                "email": user.get("email"),
-                "name": user.get("name"),
-                "id": user.get("id")
-            },
-            "api_url": api_url
-        }
-        save_config(config)
-        return data
-    else:
+    if response.status_code != 200:
         raise Exception(f"Login failed: {response.status_code} - {response.text}")
+    
+    data = response.json()
+    
+    # Check if 2FA is required
+    if data.get("requires_2fa"):
+        session_id = data.get("session_id")
+        print(f"\n📧 2FA code sent to {email}")
+        code = input("Enter 2FA code: ").strip()
+        
+        # Step 2: Verify 2FA
+        response = requests.post(
+            f"{api_url}/api/v1/auth/verify-2fa",
+            json={"session_id": session_id, "code": code}
+        )
+        
+        if response.status_code != 200:
+            raise Exception(f"2FA verification failed: {response.status_code} - {response.text}")
+        
+        data = response.json()
+    
+    # Extract token from response
+    token = data.get("token") or data.get("access_token")
+    user = data.get("user", {})
+    
+    if not token:
+        raise Exception("No token received from server")
+    
+    # Save token and user info
+    config = {
+        "token": token,
+        "user": {
+            "email": user.get("email"),
+            "name": user.get("name"),
+            "id": user.get("id")
+        },
+        "api_url": api_url
+    }
+    save_config(config)
+    return data
 
 
 def logout() -> None:
