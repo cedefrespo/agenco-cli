@@ -49,6 +49,11 @@
       "name": "music-king-gizzard",
       "description": "Psychedelic garage rock with experimental edge (King Gizzard style)",
       "prompt": "Psychedelic garage rock with experimental edge, driving motorik rhythm, energetic live drums, fuzzy microtonal-feeling guitars with phaser and delay, groovy melodic basslines, raw analog warmth, dynamic shifts between mellow psych jams and explosive sections, hypnotic repetitive riffs, adventurous song structure, trippy and surreal mood, slightly gritty vocal with reverb and attitude, retro 70s psych vibe mixed with modern garage intensity, jam-band feel, cinematic and mind-bending atmosphere."
+    },
+    {
+      "name": "trent-nin",
+      "description": "Dark industrial rock / electro-industrial, brooding and cinematic, slow-to-mid tempo, heavy distorted synths and bass, gritty layered guitars, punchy programmed drums mixed with acoustic hits, tense minor-key harmonies, haunting pads and sound design textures, intimate whispery verses exploding into aggressive choruses, raw emotional delivery, themes of inner conflict and alienation, dense atmospheric production with distortion, glitches and risers, dynamic build-ups and drops, cold futuristic mood but deeply human, immersive and intense.",
+      "prompt": "Dark industrial rock / electro-industrial, brooding and cinematic, slow-to-mid tempo, heavy distorted synths and bass, gritty layered guitars, punchy programmed drums mixed with acoustic hits, tense minor-key harmonies, haunting pads and sound design textures, intimate whispery verses exploding into aggressive choruses, raw emotional delivery, themes of inner conflict and alienation, dense atmospheric production with distortion, glitches and risers, dynamic build-ups and drops, cold futuristic mood but deeply human, immersive and intense."
     }
   ]
 }

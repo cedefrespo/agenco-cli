@@ -387,7 +387,7 @@ def publish_agent(name: str, api_url: str = "https://api.agenco.dev", token: str
         headers["Authorization"] = f"Bearer {token}"
     
     response = requests.post(
-        f"{api_url}/api/v1/agents/publish",
+        f"{api_url}/api/v1/publish/agent",
         json=payload,
         headers=headers
     )
@@ -430,7 +430,7 @@ def publish_context(name: str, api_url: str = "https://api.agenco.dev", token: s
         headers["Authorization"] = f"Bearer {token}"
     
     response = requests.post(
-        f"{api_url}/api/v1/contexts/publish",
+        f"{api_url}/api/v1/publish/context",
         json=payload,
         headers=headers
     )
