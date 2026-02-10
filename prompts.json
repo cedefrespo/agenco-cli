@@ -54,6 +54,11 @@
       "name": "trent-nin",
       "description": "Dark industrial rock / electro-industrial, brooding and cinematic, slow-to-mid tempo, heavy distorted synths and bass, gritty layered guitars, punchy programmed drums mixed with acoustic hits, tense minor-key harmonies, haunting pads and sound design textures, intimate whispery verses exploding into aggressive choruses, raw emotional delivery, themes of inner conflict and alienation, dense atmospheric production with distortion, glitches and risers, dynamic build-ups and drops, cold futuristic mood but deeply human, immersive and intense.",
       "prompt": "Dark industrial rock / electro-industrial, brooding and cinematic, slow-to-mid tempo, heavy distorted synths and bass, gritty layered guitars, punchy programmed drums mixed with acoustic hits, tense minor-key harmonies, haunting pads and sound design textures, intimate whispery verses exploding into aggressive choruses, raw emotional delivery, themes of inner conflict and alienation, dense atmospheric production with distortion, glitches and risers, dynamic build-ups and drops, cold futuristic mood but deeply human, immersive and intense."
+    },
+    {
+      "name": "music-celtic-harp-algo",
+      "description": "Celtic harp ambient electronic with algorithmic patterns",
+      "prompt": "Celtic harp, ambient electronic, algorithmic patterns, minimal, contemplative, subtle pulse, 65 bpm, introspective, modern meets ancient, soft arpeggios, spacious, cerebral, no drums."
     }
   ]
 }
