@@ -80,25 +80,59 @@ agenco stats            # Show statistics
 
 After logging in with `agenco login`, publish is simple:
 
+##### From Registry (agents.json, contexts.json, prompts.json)
 ```bash
-# Publish agents, contexts, or prompts to Agenco marketplace
-agenco publish agent <name>          # Publish an agent
-agenco publish context <name>        # Publish a context
-agenco publish prompt <name>         # Publish a prompt
+agenco publish agent marco           # Publish agent from agents.json
+agenco publish context my-docs       # Publish context from contexts.json
+agenco publish prompt code-review    # Publish prompt from prompts.json
 ```
 
-Without login, you can still use `--token`:
-
+##### From Current Directory (Agents)
 ```bash
-# With authentication token
-agenco publish agent marco --token abc123
+# Interactive: select a .md or .json file in current directory
+agenco publish agent
 
-# Custom API URL (for testing)
-agenco publish context ux-patterns --api-url http://localhost:8080
+# From specific file
+agenco publish agent --file ./system_prompt.md
+agenco publish agent --file ./config.json --name my-custom-agent
+```
 
-# Using environment variable for token
-export AGENCO_TOKEN='your-token-here'
-agenco publish prompt code-review
+##### From Directory (Contexts)
+```bash
+# Publish all files in current directory as a context
+agenco publish context
+
+# Publish specific directory
+agenco publish context --dir ./docs
+agenco publish context --dir ./my-project --name project-documentation
+```
+
+When publishing from a directory:
+- **Text files** (`.md`, `.txt`, `.json`, `.yaml`, `.py`, `.go`, etc.) → bundled as context content
+- **Asset files** (`.pdf`, `.doc`, `.png`, `.jpg`, etc.) → uploaded to R2 storage
+
+##### Options
+```bash
+--file FILE      # Publish agent from specific file (.md or .json)
+--dir DIR        # Publish context from directory
+--name NAME      # Override resource name
+--desc DESC      # Set description
+--token TOKEN    # Authentication token
+--api-url URL    # API URL (default: https://agt.fly.dev)
+--no-assets      # Skip uploading asset files to storage
+```
+
+##### Examples
+```bash
+# Navigate to your project and publish as context
+cd ~/projects/my-api-docs
+agenco publish context --name api-documentation
+
+# Publish an agent from a markdown file
+agenco publish agent --file ./agents/senior-dev.md
+
+# Publish with custom description
+agenco publish context --dir ./docs --name my-docs --desc "Project documentation"
 ```
 
 > **Note:** Publishing requires authentication. Use `agenco login` (recommended) or provide `--token` flag.
