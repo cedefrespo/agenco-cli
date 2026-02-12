@@ -19,7 +19,26 @@ Usage:
     agenco prompts copy <name> # Copy prompt to clipboard
     agenco search <query>      # Search across all
     agenco stats               # Show statistics
-    agenco publish <type> <name> # Publish to Agenco marketplace
+    
+Publish to Agenco Marketplace:
+    # From registry (agents.json, contexts.json, prompts.json)
+    agenco publish agent marco
+    agenco publish context my-docs
+    agenco publish prompt fix-bug
+    
+    # Agent from file (interactive selection in current directory)
+    agenco publish agent
+    
+    # Agent from specific file
+    agenco publish agent --file ./system_prompt.md --name my-agent
+    
+    # Context from current directory (all files)
+    agenco publish context
+    agenco publish context --dir ./docs --name my-docs
+    
+    Files are handled automatically:
+    - .md, .txt, .json, etc -> bundled as context content
+    - .pdf, images, etc    -> uploaded to storage as assets
 
 Authentication:
     Login to avoid passing --token every time:
@@ -290,29 +309,61 @@ def cmd_stats(args):
 
 
 def cmd_publish(args):
-    """Handle publish command - publish to Agenco marketplace."""
-    if not args or len(args) < 2:
-        print("\nUsage: agenco publish <type> <name> [--token TOKEN] [--api-url URL]")
-        print("\nExamples:")
+    """Handle publish command - publish to Agenco marketplace.
+    
+    Modes:
+    1. Named resource: agenco publish agent marco (from agents.json)
+    2. Directory-based: agenco publish agent (select file in current dir)
+    3. Directory context: agenco publish context (publish current dir)
+    """
+    if not args:
+        print("\nUsage: agenco publish <type> [name] [options]")
+        print("\nTypes:")
+        print("  agent    Publish an agent")
+        print("  context  Publish a context")
+        print("  prompt   Publish a prompt")
+        print("\nModes:")
+        print("  1. From registry:  agenco publish agent marco")
+        print("     Publishes 'marco' from agents.json")
+        print()
+        print("  2. From file:      agenco publish agent --file ./system_prompt.md")
+        print("     Publishes agent from a .md or .json file")
+        print()
+        print("  3. From directory: agenco publish context --dir .")
+        print("     Publishes all files in directory as a context")
+        print("     - .md, .txt, etc -> context content")
+        print("     - .pdf, images   -> uploaded to storage")
+        print()
+        print("Options:")
+        print("  --file FILE      Publish agent from specific file (.md or .json)")
+        print("  --dir DIR        Publish context from directory (default: current dir)")
+        print("  --name NAME      Override resource name")
+        print("  --desc DESC      Set description")
+        print("  --token TOKEN    Authentication token")
+        print("  --api-url URL    API URL (default: https://agt.fly.dev)")
+        print("  --no-assets      Skip uploading asset files (for context)")
+        print()
+        print("Examples:")
         print("  agenco publish agent marco")
-        print("  agenco publish context ux-patterns")
+        print("  agenco publish agent --file ./my-agent.md --name my-custom-agent")
+        print("  agenco publish context --dir ./docs --name project-docs")
+        print("  agenco publish context   # publish current directory")
         print("  agenco publish prompt code-review")
-        print("  agenco publish agent marco --token abc123")
-        print("  agenco publish context ux-patterns --api-url http://localhost:8080")
-        print("\nOptions:")
-        print("  --token TOKEN    Authentication token (if not set, will look for AGENCO_TOKEN env var)")
-        print("  --api-url URL    API URL (default: https://api.agenco.dev)")
         print()
         return
     
     item_type = args[0].lower()
-    name = args[1]
     
-    # Parse optional arguments
+    # Parse arguments
+    name = None
     token = os.getenv("AGENCO_TOKEN")
     api_url = "https://agt.fly.dev"
+    file_path = None
+    dir_path = None
+    description = None
+    include_assets = True
     
-    i = 2
+    i = 1
     while i < len(args):
         if args[i] == "--token" and i + 1 < len(args):
             token = args[i + 1]
@@ -320,31 +371,123 @@ def cmd_publish(args):
         elif args[i] == "--api-url" and i + 1 < len(args):
             api_url = args[i + 1]
             i += 2
+        elif args[i] == "--file" and i + 1 < len(args):
+            file_path = args[i + 1]
+            i += 2
+        elif args[i] == "--dir" and i + 1 < len(args):
+            dir_path = args[i + 1]
+            i += 2
+        elif args[i] == "--name" and i + 1 < len(args):
+            name = args[i + 1]
+            i += 2
+        elif args[i] == "--desc" and i + 1 < len(args):
+            description = args[i + 1]
+            i += 2
+        elif args[i] == "--no-assets":
+            include_assets = False
+            i += 1
+        elif not args[i].startswith("--") and name is None:
+            name = args[i]
+            i += 1
         else:
             i += 1
     
     try:
-        print(f"\n[Publishing] Publishing {item_type} '{name}' to Agenco marketplace...")
-        
+        # AGENT publishing
         if item_type == "agent":
-            from core import publish_agent
-            result = publish_agent(name, api_url=api_url, token=token)
+            if file_path:
+                # Publish from file
+                from core import publish_agent_from_file
+                print(f"\n[Publishing] Publishing agent from file '{file_path}'...")
+                result = publish_agent_from_file(file_path, name=name, description=description, api_url=api_url, token=token)
+            elif name:
+                # Publish from registry
+                from core import publish_agent
+                print(f"\n[Publishing] Publishing agent '{name}' to Agenco marketplace...")
+                result = publish_agent(name, api_url=api_url, token=token)
+            else:
+                # Interactive: select file in current directory
+                cmd_publish_agent_interactive(api_url, token, name, description)
+                return
+        
+        # CONTEXT publishing
         elif item_type == "context":
-            from core import publish_context
-            result = publish_context(name, api_url=api_url, token=token)
+            if dir_path or (not name and not file_path):
+                # Publish from directory
+                from core import publish_context_from_directory
+                target_dir = dir_path or "."
+                print(f"\n[Publishing] Publishing context from directory '{target_dir}'...")
+                
+                # Show what will be published
+                from core import get_directory_files
+                files_info = get_directory_files(target_dir)
+                
+                print(f"\n  Directory: {files_info['directory']}")
+                if files_info['text_files']:
+                    print(f"  Text files ({len(files_info['text_files'])}):")
+                    for f in files_info['text_files'][:10]:
+                        print(f"    - {f['name']}")
+                    if len(files_info['text_files']) > 10:
+                        print(f"    ... and {len(files_info['text_files']) - 10} more")
+                
+                if files_info['asset_files']:
+                    print(f"  Asset files ({len(files_info['asset_files'])}):")
+                    for f in files_info['asset_files'][:5]:
+                        print(f"    - {f['name']} (will be uploaded to storage)")
+                    if len(files_info['asset_files']) > 5:
+                        print(f"    ... and {len(files_info['asset_files']) - 5} more")
+                
+                if not files_info['text_files'] and not files_info['asset_files']:
+                    print("\n[ERROR] No publishable files found in directory")
+                    return
+                
+                # Confirm
+                confirm = input("\nPublish this context? [y/N]: ").strip().lower()
+                if confirm != 'y':
+                    print("[Cancelled]")
+                    return
+                
+                result = publish_context_from_directory(
+                    directory=target_dir, 
+                    name=name, 
+                    description=description, 
+                    api_url=api_url, 
+                    token=token,
+                    include_assets=include_assets
+                )
+            elif name:
+                # Publish from registry
+                from core import publish_context
+                print(f"\n[Publishing] Publishing context '{name}' to Agenco marketplace...")
+                result = publish_context(name, api_url=api_url, token=token)
+            else:
+                print("[ERROR] Please provide a context name or use --dir")
+                return
+        
+        # PROMPT publishing
         elif item_type == "prompt":
-            from core import publish_prompt
-            result = publish_prompt(name, api_url=api_url, token=token)
+            if name:
+                from core import publish_prompt
+                print(f"\n[Publishing] Publishing prompt '{name}' to Agenco marketplace...")
+                result = publish_prompt(name, api_url=api_url, token=token)
+            else:
+                print("[ERROR] Please provide a prompt name")
+                print("Usage: agenco publish prompt <name>")
+                return
+        
         else:
             print(f"\n[ERROR] Unknown type: {item_type}")
             print("   Valid types: agent, context, prompt")
             return
         
-        print(f"\n[OK] Successfully published '{name}'!")
+        # Success output
+        print(f"\n[OK] Successfully published!")
         if result.get("id"):
             print(f"   ID: {result['id']}")
         if result.get("url"):
             print(f"   URL: {result['url']}")
+        if result.get("name"):
+            print(f"   Name: {result['name']}")
         print()
         
     except ValueError as e:
@@ -353,6 +496,84 @@ def cmd_publish(args):
     except Exception as e:
         print(f"\n[ERROR] Failed to publish: {str(e)}")
         print()
+
+
+def cmd_publish_agent_interactive(api_url, token, name=None, description=None):
+    """Interactive agent publishing - select file from current directory."""
+    from pathlib import Path
+    from core import publish_agent_from_file
+    
+    cwd = Path.cwd()
+    
+    # Find .md and .json files
+    valid_files = []
+    for item in cwd.iterdir():
+        if item.is_file() and item.suffix.lower() in {'.md', '.json'} and not item.name.startswith('.'):
+            valid_files.append(item)
+    
+    if not valid_files:
+        print(f"\n[ERROR] No .md or .json files found in {cwd}")
+        print("   Please navigate to a directory with agent files or use --file")
+        return
+    
+    # Sort by name
+    valid_files.sort(key=lambda x: x.name)
+    
+    print(f"\n[Agent] Select a file to publish as agent:")
+    print(f"   Directory: {cwd}\n")
+    
+    for idx, f in enumerate(valid_files, 1):
+        size = f.stat().st_size
+        size_str = f"{size / 1024:.1f} KB" if size > 1024 else f"{size} B"
+        print(f"   [{idx}] {f.name} ({size_str})")
+    
+    print(f"   [0] Cancel")
+    print()
+    
+    try:
+        choice = input("Select file: ").strip()
+        choice_num = int(choice)
+        
+        if choice_num == 0:
+            print("[Cancelled]")
+            return
+        
+        if 1 <= choice_num <= len(valid_files):
+            selected_file = valid_files[choice_num - 1]
+            
+            # Ask for name if not provided
+            if not name:
+                default_name = selected_file.stem
+                name_input = input(f"Agent name [{default_name}]: ").strip()
+                name = name_input if name_input else default_name
+            
+            # Ask for description if not provided
+            if not description:
+                desc_input = input("Description (optional): ").strip()
+                description = desc_input if desc_input else None
+            
+            print(f"\n[Publishing] Publishing agent from '{selected_file.name}'...")
+            result = publish_agent_from_file(
+                str(selected_file), 
+                name=name, 
+                description=description, 
+                api_url=api_url, 
+                token=token
+            )
+            
+            print(f"\n[OK] Successfully published!")
+            if result.get("id"):
+                print(f"   ID: {result['id']}")
+            if result.get("url"):
+                print(f"   URL: {result['url']}")
+            print()
+        else:
+            print("[ERROR] Invalid selection")
+            
+    except ValueError:
+        print("[ERROR] Please enter a number")
+    except Exception as e:
+        print(f"\n[ERROR] Failed to publish: {str(e)}")
 
 
 def interactive_mode():

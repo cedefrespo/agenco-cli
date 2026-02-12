@@ -599,3 +599,272 @@ def is_logged_in() -> bool:
     """Check if user is logged in."""
     return get_saved_token() is not None
 
+
+# ============================================
+# DIRECTORY-BASED PUBLISH
+# ============================================
+
+# File extensions that are context-worthy (text-based)
+TEXT_EXTENSIONS = {'.md', '.txt', '.json', '.yaml', '.yml', '.toml', '.ini', '.cfg', '.conf', '.xml', '.html', '.css', '.js', '.ts', '.py', '.go', '.rs', '.java', '.c', '.cpp', '.h', '.hpp', '.sh', '.bash', '.zsh', '.sql', '.r', '.rb', '.php', '.swift', '.kt', '.scala', '.lua', '.vim', '.el'}
+
+# File extensions that should be uploaded as assets to R2
+ASSET_EXTENSIONS = {'.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.mp3', '.mp4', '.wav', '.zip', '.tar', '.gz'}
+
+
+def get_directory_files(directory: Path = None) -> dict:
+    """
+    Scan a directory and categorize files.
+    
+    Returns:
+        dict with 'text_files' (for context) and 'asset_files' (for R2 upload)
+    """
+    if directory is None:
+        directory = Path.cwd()
+    
+    directory = Path(directory)
+    
+    text_files = []
+    asset_files = []
+    other_files = []
+    
+    # Scan directory (non-recursive for now, can add option later)
+    for item in directory.iterdir():
+        if item.is_file() and not item.name.startswith('.'):
+            ext = item.suffix.lower()
+            file_info = {
+                'name': item.name,
+                'path': str(item.absolute()),
+                'extension': ext,
+                'size': item.stat().st_size
+            }
+            
+            if ext in TEXT_EXTENSIONS:
+                text_files.append(file_info)
+            elif ext in ASSET_EXTENSIONS:
+                asset_files.append(file_info)
+            else:
+                other_files.append(file_info)
+    
+    return {
+        'text_files': text_files,
+        'asset_files': asset_files,
+        'other_files': other_files,
+        'directory': str(directory),
+        'directory_name': directory.name
+    }
+
+
+def read_text_file(filepath: str) -> str:
+    """Read a text file and return its content."""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def upload_asset_to_r2(filepath: str, api_url: str = "https://agt.fly.dev", token: str = None) -> dict:
+    """Upload an asset file to R2 storage via API."""
+    import requests
+    
+    if not token:
+        token = get_saved_token()
+        if not token:
+            raise ValueError("Not logged in. Run 'agenco login' first")
+    
+    file_path = Path(filepath)
+    
+    # Prepare multipart upload
+    with open(file_path, 'rb') as f:
+        files = {
+            'file': (file_path.name, f, 'application/octet-stream')
+        }
+        headers = {'Authorization': f'Bearer {token}'}
+        
+        response = requests.post(
+            f"{api_url}/api/v1/upload/asset",
+            files=files,
+            headers=headers
+        )
+    
+    if response.status_code in [200, 201]:
+        return response.json()
+    else:
+        raise Exception(f"Failed to upload asset: {response.status_code} - {response.text}")
+
+
+def publish_agent_from_file(
+    filepath: str, 
+    name: str = None,
+    description: str = None,
+    api_url: str = "https://agt.fly.dev", 
+    token: str = None
+) -> dict:
+    """
+    Publish an agent from a single .md or .json file.
+    
+    Args:
+        filepath: Path to the .md or .json file
+        name: Agent name (defaults to filename without extension)
+        description: Agent description
+        api_url: API URL
+        token: Auth token
+    """
+    import requests
+    
+    if not token:
+        token = get_saved_token()
+        if not token:
+            raise ValueError("Not logged in. Run 'agenco login' first or provide --token")
+    
+    file_path = Path(filepath)
+    if not file_path.exists():
+        raise ValueError(f"File not found: {filepath}")
+    
+    ext = file_path.suffix.lower()
+    if ext not in {'.md', '.json'}:
+        raise ValueError(f"Invalid file type: {ext}. Only .md and .json are supported for agents.")
+    
+    # Determine name
+    if not name:
+        name = file_path.stem  # filename without extension
+    
+    # Read content
+    if ext == '.json':
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            content = json.dumps(data, indent=2)
+            if not description:
+                description = data.get('description', f'Agent from {file_path.name}')
+    else:
+        content = read_text_file(str(file_path))
+        if not description:
+            # Try to extract description from first line or use default
+            first_line = content.split('\n')[0].strip()
+            if first_line.startswith('#'):
+                description = first_line.lstrip('#').strip()
+            else:
+                description = f'Agent from {file_path.name}'
+    
+    # Prepare payload
+    payload = {
+        "name": name,
+        "description": description,
+        "content": content,
+        "tags": [],
+        "category": "other",
+        "status": "active",
+        "is_public": True,
+        "is_free": True,
+    }
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    response = requests.post(
+        f"{api_url}/api/v1/publish/agent",
+        json=payload,
+        headers=headers
+    )
+    
+    if response.status_code in [200, 201]:
+        return response.json()
+    else:
+        raise Exception(f"Failed to publish agent: {response.status_code} - {response.text}")
+
+
+def publish_context_from_directory(
+    directory: str = None,
+    name: str = None,
+    description: str = None,
+    api_url: str = "https://agt.fly.dev",
+    token: str = None,
+    include_assets: bool = True
+) -> dict:
+    """
+    Publish a context from all files in a directory.
+    
+    - .md and other text files are bundled as context content
+    - .pdf and other assets are uploaded to R2
+    
+    Args:
+        directory: Directory path (defaults to current directory)
+        name: Context name (defaults to directory name)
+        description: Context description
+        api_url: API URL
+        token: Auth token
+        include_assets: Whether to upload asset files to R2
+    """
+    import requests
+    
+    if not token:
+        token = get_saved_token()
+        if not token:
+            raise ValueError("Not logged in. Run 'agenco login' first or provide --token")
+    
+    # Get directory info
+    dir_path = Path(directory) if directory else Path.cwd()
+    files_info = get_directory_files(dir_path)
+    
+    if not name:
+        name = files_info['directory_name']
+    
+    if not description:
+        description = f"Context from {files_info['directory_name']} directory"
+    
+    # Bundle text content
+    content_parts = []
+    for file_info in files_info['text_files']:
+        try:
+            file_content = read_text_file(file_info['path'])
+            content_parts.append(f"# File: {file_info['name']}\n\n{file_content}")
+        except Exception as e:
+            print(f"[WARN] Could not read {file_info['name']}: {e}")
+    
+    if not content_parts:
+        raise ValueError("No text files found in directory to publish")
+    
+    content = "\n\n---\n\n".join(content_parts)
+    
+    # Upload assets if requested
+    asset_urls = []
+    if include_assets and files_info['asset_files']:
+        print(f"\n[Info] Uploading {len(files_info['asset_files'])} asset files to storage...")
+        for asset_info in files_info['asset_files']:
+            try:
+                result = upload_asset_to_r2(asset_info['path'], api_url, token)
+                asset_urls.append({
+                    'name': asset_info['name'],
+                    'url': result.get('url', ''),
+                    'type': asset_info['extension']
+                })
+                print(f"  [OK] Uploaded {asset_info['name']}")
+            except Exception as e:
+                print(f"  [WARN] Failed to upload {asset_info['name']}: {e}")
+    
+    # Prepare payload
+    payload = {
+        "name": name,
+        "description": description,
+        "content": content,
+        "tags": [],
+        "category": "other",
+        "content_type": "documents",
+        "status": "active",
+        "is_public": True,
+        "is_free": True,
+    }
+    
+    # Add asset URLs if any were uploaded
+    if asset_urls:
+        payload["assets"] = asset_urls
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    response = requests.post(
+        f"{api_url}/api/v1/publish/context",
+        json=payload,
+        headers=headers
+    )
+    
+    if response.status_code in [200, 201]:
+        return response.json()
+    else:
+        raise Exception(f"Failed to publish context: {response.status_code} - {response.text}")
+

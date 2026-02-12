@@ -11,9 +11,7 @@ __pycache__/
 .Python
 *.egg-info/
 dist/
-build/
-
-# IDE
+build/# IDE
 .vscode/
 .idea/
 *.swp
