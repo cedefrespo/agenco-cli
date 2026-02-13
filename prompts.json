@@ -59,6 +59,11 @@
       "name": "music-celtic-harp-algo",
       "description": "Celtic harp ambient electronic with algorithmic patterns",
       "prompt": "Celtic harp, ambient electronic, algorithmic patterns, minimal, contemplative, subtle pulse, 65 bpm, introspective, modern meets ancient, soft arpeggios, spacious, cerebral, no drums."
+    },
+    {
+      "name": "music-chicha",
+      "description": "Psychedelic Peruvian cumbia (chicha) with vintage 60s-70s vibe",
+      "prompt": "Psychedelic Peruvian cumbia (chicha) with vintage 60s–70s vibe, hypnotic electric guitar with heavy spring reverb and wah, melodic pentatonic riffs, groovy cumbia rhythm on guiro and congas, warm analog bassline, Farfisa-style organ, lo-fi tape saturation, tropical atmosphere, slightly mystical mood, danceable but dreamy, instrumental or Spanish vocal hooks about jungle, city nights, and nostalgia."
     }
   ]
 }
