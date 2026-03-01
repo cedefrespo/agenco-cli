@@ -64,6 +64,46 @@
       "name": "music-chicha",
       "description": "Psychedelic Peruvian cumbia (chicha) with vintage 60s-70s vibe",
       "prompt": "Psychedelic Peruvian cumbia (chicha) with vintage 60s–70s vibe, hypnotic electric guitar with heavy spring reverb and wah, melodic pentatonic riffs, groovy cumbia rhythm on guiro and congas, warm analog bassline, Farfisa-style organ, lo-fi tape saturation, tropical atmosphere, slightly mystical mood, danceable but dreamy, instrumental or Spanish vocal hooks about jungle, city nights, and nostalgia."
+    },
+    {
+      "name": "music-dub-reggae",
+      "description": "Deep dub reggae with heavy basslines, spacious reverb (King Tubby / Lee Scratch Perry style)",
+      "prompt": "Deep dub reggae with heavy basslines, spacious reverb, and echo-drenched drums. Slow tempo, hypnotic groove, analog warmth, subtle tape delay effects, and atmospheric textures. Meditative and immersive mood, roots reggae influence, minimal vocals or distant chant-like phrases. Studio-style dub mixing, classic King Tubby / Lee \"Scratch\" Perry vibe, modern clean production."
+    },
+    {
+      "name": "music-andean-folktronica",
+      "description": "Psychedelic Andean electronic with deep bass and echoing flutes (Folktronica)",
+      "prompt": "Psychedelic Andean electronic with deep bass, echoing flutes, textured synth layers, tribal rhythms, and expansive atmospheric spaces. Mystical journey through mountains and jungles."
+    },
+    {
+      "name": "music-dark-ambient-drone",
+      "description": "Dark ambient drone with deep evolving textures and cinematic atmosphere",
+      "prompt": "Dark ambient drone with deep evolving textures, low-frequency rumbling, distant metallic resonances, and slow-moving atmospheric layers. Minimal melody, tension-building sound design, cinematic and immersive. Mood: dark, introspective, mysterious, slightly ominous. Inspired by deep space, abandoned structures, and inner psychological landscapes."
+    },
+    {
+      "name": "music-psychedelic-free-jazz",
+      "description": "Psychedelic experimental / free jazz with unpredictable structures and avant-garde energy",
+      "prompt": "Psychedelic free jazz with unpredictable structures, expressive sax improvisations, dissonant piano clusters, loose polyrhythmic drums, and swirling analog textures; experimental, abstract, and exploratory; mood of uncertainty, creative chaos, and curiosity; music that feels like learning to live without clear answers; dynamic shifts, moments of tension and release, cerebral and immersive, slightly surreal, late-night avant-garde jazz club energy."
+    },
+    {
+      "name": "music-arabic-sufi",
+      "description": "Mystical Sufi-inspired Arabic music with oud melodies and hypnotic rhythms",
+      "prompt": "Mystical Sufi-inspired music with oud melodies, darbuka rhythms, and Phrygian scales; hypnotic, flowing, and ceremonial; evokes alchemy, inner fire, and spiritual transformation; warm tonal colors, trance-like groove, devotional and immersive atmosphere."
+    },
+    {
+      "name": "music-minimalist-repetitive",
+      "description": "Repetitive minimalist composition (Steve Reich / Philip Glass style)",
+      "prompt": "Repetitive minimalist composition with interlocking piano patterns, subtle phase shifts, and evolving motifs; hypnotic, meditative, and precise; mantra-like repetition that feels like conscious reprogramming; gradual development, calm but mentally engaging."
+    },
+    {
+      "name": "music-sgt-india",
+      "description": "Psychedelic Indian fusion inspired by The Beatles Sgt. Pepper's era",
+      "prompt": "Psychedelic Indian fusion inspired by The Beatles Sgt. Pepper's. Sitar, tabla, tanpura drone mixed with 60s psychedelic rock band (electric guitar, bass, vintage drums). Dreamy male vocals with layered harmonies, surreal and colorful mood, spiritual but playful. Raga-inspired melodies, analog tape warmth, phaser and reverse effects, cinematic and hypnotic. Feels like a mystical journey through India in 1967."
+    },
+    {
+      "name": "music-rhcp-lp",
+      "description": "California funk rock with slap bass and explosive energy (RHCP / LP style)",
+      "prompt": "Funk rock with explosive energy, slap bass upfront and melodic but punchy basslines, tight syncopated drums with ghost notes, crunchy clean-to-overdriven guitars with wah and rhythmic funk strumming, dynamic male vocals switching between melodic hooks and rhythmic spoken phrases. Upbeat tempo around 105–115 BPM. Raw 90s analog vibe, live band feel, minimal polish, high groove. Chorus big and anthemic, verses stripped and funky. Influences: California alternative funk rock, energetic stage presence, sweat and sunshine atmosphere."
     }
   ]
 }

@@ -428,10 +428,12 @@ def publish_context(name: str, api_url: str = "https://agt.fly.dev", token: str 
         raise ValueError(f"Context '{name}' has no content to publish")
     
     # Prepare payload
+    ctx_name = context.get("name", "")
     payload = {
-        "name": context.get("name"),
+        "name": ctx_name,
+        "display_name": ctx_name,
         "description": context.get("description", ""),
-        "content": content,
+        "long_description": content,
         "tags": context.get("tags", []),
         "category": context.get("category", "other"),
         "content_type": context.get("content_type", "documents"),
@@ -446,7 +448,7 @@ def publish_context(name: str, api_url: str = "https://agt.fly.dev", token: str 
         headers["Authorization"] = f"Bearer {token}"
     
     response = requests.post(
-        f"{api_url}/api/v1/publish/context",
+        f"{api_url}/api/v1/contexts",
         json=payload,
         headers=headers
     )
@@ -841,8 +843,9 @@ def publish_context_from_directory(
     # Prepare payload
     payload = {
         "name": name,
+        "display_name": name,
         "description": description,
-        "content": content,
+        "long_description": content,
         "tags": [],
         "category": "other",
         "content_type": "documents",
@@ -858,7 +861,7 @@ def publish_context_from_directory(
     headers = {"Authorization": f"Bearer {token}"}
     
     response = requests.post(
-        f"{api_url}/api/v1/publish/context",
+        f"{api_url}/api/v1/contexts",
         json=payload,
         headers=headers
     )
